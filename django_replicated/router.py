@@ -77,6 +77,9 @@ class ReplicationRouter(object):
         if self.CHECK_STATE_ON_WRITE and self.state() != 'master':
             raise RuntimeError('Trying to access master database in slave state')
 
+        if self.state() != 'master':
+            self.use_state('master')
+
         self.context.chosen['master'] = self.DEFAULT_DB_ALIAS
 
         log.debug('db_for_write: %s', self.DEFAULT_DB_ALIAS)
