@@ -78,7 +78,7 @@ class ReplicationRouter(object):
             raise RuntimeError('Trying to access master database in slave state')
 
         if self.state() != 'master':
-            self.use_state('master')
+            self.init('master')
 
         self.context.chosen['master'] = self.DEFAULT_DB_ALIAS
 
