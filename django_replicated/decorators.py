@@ -29,10 +29,10 @@ def use_state_in_function(forced_state='master'):
 
     def _make_decorator(func):
 
-        def wrapper():
+        def wrapper(*args, **kwargs):
             prev_state = routers.state()  # Store previous state
             routers.init(forced_state)  # Set state to the forced_state
-            func()
+            func(*args, **kwargs)
             # If previous state was master, set it back
             # Handling function calls from other functions or classes
             if prev_state == 'master':
