@@ -9,7 +9,8 @@ from functools import partial
 
 from django import db
 from django.conf import settings
-from django.utils import six, functional
+from django.utils import functional
+import six
 
 try:  # django 1.10+
     from django import urls
@@ -105,7 +106,7 @@ class ReplicationMiddleware(MiddlewareMixin):
         Used to check if a web request should use a master or slave
         database besides default choice.
         '''
-        if request.COOKIES.get(settings.REPLICATED_FORCE_MASTER_COOKIE_NAME) == 'true':
+        if getattr(request, 'COOKIES', {}).get(settings.REPLICATED_FORCE_MASTER_COOKIE_NAME) == 'true':
             return 'master'
 
         override_state = self.get_state_override(request)
@@ -150,7 +151,7 @@ class ReplicationMiddleware(MiddlewareMixin):
             log.debug('set force master cookie for %s', request.path)
             self.set_force_master_cookie(response)
         else:
-            if settings.REPLICATED_FORCE_MASTER_COOKIE_NAME in request.COOKIES:
+            if settings.REPLICATED_FORCE_MASTER_COOKIE_NAME in getattr(request, 'COOKIES', {}):
                 response.delete_cookie(settings.REPLICATED_FORCE_MASTER_COOKIE_NAME)
 
     def set_force_master_cookie(self, response):
